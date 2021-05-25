@@ -1,85 +1,86 @@
 const express = require("express");
 
 const db = require("../../data/db-config.js");
+const { validateUserBody, validateUserExists } = require('./user-middleware');
+// The knex reference that used to be here (through db-config) is replaced by a
+// reference to our data model object: user-model.
+const User = require('./user-model.js');
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  db("users")
+//----------------------------------------------------------------------------//
+// Each of these middleware route handlers have been refactored to use our
+// model db functions from user-model.js.
+//
+// This helps us keep our source files single-purpose, simplifying testing and
+// troubleshooting, etc.
+//
+// The name "model" is really just a reference to the role of that "layer or
+// logic" in the design - it's where our database methods are.
+//
+// This follows the typical MVC pattern. You can read about it here:
+// https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+//
+//----------------------------------------------------------------------------//
+router.get('/', (req, res, next) => {
+  User.find()
     .then(users => {
       res.json(users);
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get users" });
+    }).catch(err => {
+      next(err);
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get('/:id', validateUserExists, (req, res, next) => {
+  res.json(req.user);
+});
+
+router.get('/:id/posts', validateUserExists, (req, res, next) => {
   const { id } = req.params;
 
-  db("users")
-    .where({ id })
-    .then(users => {
-      const user = users[0];
-
-      if (user) {
-        res.json(user);
-      } else {
-        res.status(404).json({ message: "Could not find user with given id." });
-      }
+  User.findPosts(id)
+    .then(posts => {
+      res.json(posts);
     })
     .catch(err => {
-      res.status(500).json({ message: "Failed to get user" });
+      next(err);
+    });
+})
+
+router.post('/', validateUserBody, (req, res, next) => {
+  const { username } = req.body;
+
+  User.add({ username })
+    .then(id => {
+      res.status(201).json({ created: id });
+    })
+    .catch(err => {
+      next(err);
     });
 });
 
-router.post("/", (req, res) => {
-  const userData = req.body;
-
-  db("users")
-    .insert(userData, "id")
-    .then(ids => {
-      res.status(201).json({ created: ids[0] });
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to create new user" });
-    });
-});
-
-router.put("/:id", (req, res) => {
+router.put('/:id', validateUserBody, validateUserExists, (req, res, next) => {
   const { id } = req.params;
-  const changes = req.body;
+  const { username } = req.body;
 
-  db("users")
-    .where({ id })
-    .update(changes)
+  User.update(id, { username })
     .then(count => {
-      if (count) {
-        res.json({ update: count });
-      } else {
-        res.status(404).json({ message: "Could not find user with given id" });
-      }
+      res.json({ update: count });
     })
     .catch(err => {
-      res.status(500).json({ message: "Failed to update user" });
+      next(err);
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete('/:id', validateUserExists, (req, res, next) => {
   const { id } = req.params;
 
-  db("users")
-    .where({ id })
-    .del()
+  User.remove(id)
     .then(count => {
-      if (count) {
-        res.json({ removed: count });
-      } else {
-        res.status(404).json({ message: "Could not find user with given id" });
-      }
+      res.json({ removed: count });
     })
     .catch(err => {
-      res.status(500).json({ message: "Failed to delete user" });
+      next(err);
     });
 });
 
