@@ -4,6 +4,6 @@ const find = () => {
   return db("users");
 };
 
-export default {
+module.exports = {
   find,
 };
