@@ -20,9 +20,18 @@ const update = async (id, data) => {
   return findById(id);
 };
 
+const remove = async (id) => {
+  const deletedUser = await findById(id);
+
+  await db("users").where({ id }).del();
+
+  return deletedUser;
+};
+
 module.exports = {
   find,
   findById,
   add,
   update,
+  remove,
 };

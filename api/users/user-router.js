@@ -63,12 +63,10 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
 
-  db("users")
-    .where({ id })
-    .del()
-    .then(count => {
-      if (count) {
-        res.json({ removed: count });
+  User.remove(id)
+    .then(user => {
+      if (user) {
+        res.json(user);
       } else {
         res.status(404).json({ message: "Could not find user with given id" });
       }
