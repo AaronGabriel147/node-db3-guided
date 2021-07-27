@@ -1,19 +1,31 @@
 const db = require("../../data/db-config.js");
 
+//----------------------------------------------------------------------------//
+// find()
+//----------------------------------------------------------------------------//
+// method to return all users.
+//----------------------------------------------------------------------------//
 const find = () => {
   return db("users");
-};
+}
 
+//----------------------------------------------------------------------------//
+// findById()
+//----------------------------------------------------------------------------//
+// The .first() method provides a simple way to detect empty results. .where()
+// returns an array, but it could be an empty array. Using .first() returns the
+// first object in the array, and if the array is empty, the first object is
+// "undefined", which can be an easy test for "not the data I was looking for".
+//----------------------------------------------------------------------------//
 const findById = (id) => {
   return db("users").where({ id }).first();
-};
+}
 
-const add = async (data) => {
-  const [id] = await db("users").insert(data);
-
-  return findById(id);
-};
-
+//----------------------------------------------------------------------------//
+// findPosts()
+//----------------------------------------------------------------------------//
+// Good example of using joins in knex.
+//----------------------------------------------------------------------------//
 const findPosts = (id) => {
   return db("users")
     .join("posts", "users.id", "posts.user_id")
@@ -21,12 +33,33 @@ const findPosts = (id) => {
     .where({ user_id: id });
 };
 
+//----------------------------------------------------------------------------//
+// add()
+//----------------------------------------------------------------------------//
+// Create a new user.
+//----------------------------------------------------------------------------//
+const add = async (data) => {
+  const [id] = await db("users").insert(data);
+
+  return findById(id);
+};
+
+//----------------------------------------------------------------------------//
+// update()
+//----------------------------------------------------------------------------//
+// Update an existing user.
+//----------------------------------------------------------------------------//
 const update = async (id, data) => {
   await db("users").where({ id }).update(data);
 
   return findById(id);
 };
 
+//----------------------------------------------------------------------------//
+// remove()
+//----------------------------------------------------------------------------//
+// Delete a user.
+//----------------------------------------------------------------------------//
 const remove = async (id) => {
   const deletedUser = await findById(id);
 
