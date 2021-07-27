@@ -2,6 +2,7 @@ const express = require("express");
 const User = require('./user-model');
 
 const db = require("../../data/db-config.js");
+const { json } = require("express");
 
 const router = express.Router();
 
@@ -29,6 +30,16 @@ router.get("/:id", (req, res) => {
     .catch(err => {
       res.status(500).json({ message: "Failed to get user" });
     });
+});
+
+router.get("/:id/posts", (req, res) => {
+  const { id } = req.params;
+
+  User.findPosts(id)
+    .then(posts => res.json(posts))
+    .catch(err => {
+      res.status(500).json({ message: "Failed to fetch posts" });
+    });    
 });
 
 router.post("/", (req, res) => {

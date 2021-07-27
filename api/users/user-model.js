@@ -14,6 +14,13 @@ const add = async (data) => {
   return findById(id);
 };
 
+const findPosts = (id) => {
+  return db("users")
+    .join("posts", "users.id", "posts.user_id")
+    .select("posts.id", "users.username", "posts.contents")
+    .where({ user_id: id });
+};
+
 const update = async (id, data) => {
   await db("users").where({ id }).update(data);
 
@@ -32,6 +39,7 @@ module.exports = {
   find,
   findById,
   add,
+  findPosts,
   update,
   remove,
 };
