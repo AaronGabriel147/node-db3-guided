@@ -14,8 +14,15 @@ const add = async (data) => {
   return findById(id);
 };
 
+const update = async (id, data) => {
+  await db("users").where({ id }).update(data);
+
+  return findById(id);
+};
+
 module.exports = {
   find,
   findById,
   add,
+  update,
 };
