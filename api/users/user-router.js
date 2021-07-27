@@ -18,11 +18,8 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const { id } = req.params;
 
-  db("users")
-    .where({ id })
-    .then(users => {
-      const user = users[0];
-
+  User.findById(id)
+    .then(user => {
       if (user) {
         res.json(user);
       } else {
