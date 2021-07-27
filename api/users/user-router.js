@@ -1,9 +1,6 @@
 const express = require("express");
 const User = require('./user-model');
 
-const db = require("../../data/db-config.js");
-const { json } = require("express");
-
 const router = express.Router();
 
 router.get("/", (req, res) => {
