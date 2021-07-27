@@ -8,7 +8,14 @@ const findById = (id) => {
   return db("users").where({ id }).first();
 };
 
+const add = async (data) => {
+  const [id] = await db("users").insert(data);
+
+  return findById(id);
+};
+
 module.exports = {
   find,
   findById,
+  add,
 };

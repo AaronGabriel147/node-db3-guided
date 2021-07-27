@@ -34,10 +34,9 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const userData = req.body;
 
-  db("users")
-    .insert(userData, "id")
-    .then(ids => {
-      res.status(201).json({ created: ids[0] });
+  User.add(userData)
+    .then(user => {
+      res.status(201).json(user);
     })
     .catch(err => {
       res.status(500).json({ message: "Failed to create new user" });
