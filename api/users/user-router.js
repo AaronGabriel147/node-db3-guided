@@ -33,6 +33,21 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/:id/posts", (req, res) => {
+  const { id } = req.params;
+
+  db("users")
+    .join("posts", "users.id", "posts.user_id")
+    .select("posts.id", "posts.contents", "users.username")
+    .where("users.id", id)
+    .then(users => {
+      res.json(users);
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Failed to get posts" });
+    });
+});
+
 router.post("/", (req, res) => {
   const userData = req.body;
 
