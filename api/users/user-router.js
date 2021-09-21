@@ -18,7 +18,10 @@ router.get("/:id", (req, res) => {
   const { id } = req.params;
 
   db("users")
-    .where({ id })
+    .leftJoin('posts', 'users.id', 'posts.user_id')
+    .select("users.id", "users.username")
+    .count("posts.id AS posts_count")
+    .where('users.id', id)
     .then(users => {
       const user = users[0];
 
