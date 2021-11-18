@@ -1,18 +1,34 @@
 const express = require("express");
-
-const db = require("../../data/db-config.js");
-
 const router = express.Router();
 
+const db = require("../../data/db-config");
+
+
+// Middleware
+// const { checkCarId,
+//     checkCarPayload } = require('./cars-middleware')
+
+// Models
+const User = require('../../api/users/user-model')
+// getAll
+
+
+
+
 router.get("/", (req, res) => {
-  db("users")
+  User.getAll()
     .then(users => {
-      res.json(users);
+      // res.json(users);
+      throw new Error("Something went wrong"); // just checking the catch
     })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get users" });
-    });
+    .catch(next);
 });
+
+
+
+
+
+
 
 router.get("/:id", (req, res) => {
   const { id } = req.params;
@@ -21,16 +37,13 @@ router.get("/:id", (req, res) => {
     .where({ id })
     .then(users => {
       const user = users[0];
-
       if (user) {
         res.json(user);
       } else {
         res.status(404).json({ message: "Could not find user with given id." });
       }
     })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get user" });
-    });
+    .catch(next);
 });
 
 router.post("/", (req, res) => {
@@ -45,6 +58,30 @@ router.post("/", (req, res) => {
       res.status(500).json({ message: "Failed to create new user" });
     });
 });
+
+// select
+//     p.id as post_id,    -- rename
+//     p.contents,         -- selecting
+//     u.username as user  -- renameing
+// from posts as p         -- selecting and renaming
+// left join users as u on u.id = p.user_id -- renaming and joining
+// where u.id = 3;         -- filtering
+// -- Output is all of Seneca's quotes with the is and user renamed.
+
+
+
+router.get("/:id/posts", async (req, res, next) => {
+  try {
+
+
+  } catch (err) {
+    // res.status(500).json({ message: "Failed to get posts" });
+    next(err)
+  }
+});
+
+
+
 
 router.put("/:id", (req, res) => {
   const { id } = req.params;
