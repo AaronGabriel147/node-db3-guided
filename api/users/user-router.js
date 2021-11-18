@@ -14,12 +14,12 @@ const User = require('../../api/users/user-model')
 
 
 
-
-router.get("/", (req, res) => {
+// grabs all SQL/Knex data 
+router.get("/", (req, res, next) => {
   User.getAll()
     .then(users => {
-      // res.json(users);
-      throw new Error("Something went wrong"); // just checking the catch
+      res.json(users);
+      // throw new Error("Something went wrong"); // just checking the catch
     })
     .catch(next);
 });
@@ -30,18 +30,27 @@ router.get("/", (req, res) => {
 
 
 
-router.get("/:id", (req, res) => {
+
+
+
+
+
+
+
+
+
+
+
+router.get("/:id", (req, res, next) => {
   const { id } = req.params;
 
   db("users")
     .where({ id })
     .then(users => {
-      const user = users[0];
+      const user = users[0]; // get first user
       if (user) {
         res.json(user);
-      } else {
-        res.status(404).json({ message: "Could not find user with given id." });
-      }
+      } else next();
     })
     .catch(next);
 });
