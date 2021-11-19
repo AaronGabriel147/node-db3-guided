@@ -7,7 +7,7 @@ server.use(express.json());
 
 // CHALK
 const chalk = require("chalk");
-console.log(chalk.green("_______________________________________"));
+console.log(chalk.green("____________________________"));
 
 
 const UserRouter = require("./users/user-router.js");
@@ -26,7 +26,7 @@ server.get('/', (req, res) => { // Sanity check to connect to browser or HTTP cl
 
 
 server.use('*', (req, res, next) => {
-    console.log(chalk.yellow('@@@@@@@@@@@******inside catch all 404*******@@@@@@@@@@@')),
+    console.log(chalk.yellow('@@@***inside catch all 404***@@@')),
         next({ status: 404, message: `******${req.method} ${req.originalUrl} not found!` })
 });
 
@@ -39,7 +39,7 @@ module.exports = server;
 
 // *catch all 500 errors middleware* 
 function errorHandling(err, req, res, next) {
-    console.log(chalk.red('@@@@@@@@@@@******inside catch all 500*******@@@@@@@@@@@')),
+    console.log(chalk.red('@@@***inside catch all 500***@@@')),
         res.status(err.status || 500).json({
             message: err.message,
             status: 500

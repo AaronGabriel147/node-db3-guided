@@ -9,10 +9,16 @@ function getAll() {
 }
 
 
+function findById(id) {
+    return db("users")
+        .where({ id })
+        .first();
+}
 
 
 
 
 exports = module.exports = {
-    getAll
+    getAll,
+    findById
 }
