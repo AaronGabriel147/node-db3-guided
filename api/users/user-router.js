@@ -26,26 +26,24 @@ router.get("/", (req, res, next) => {
 });
 
 
-// // async version*
-// router.get("/:id", async (req, res, next) => {
-//   User.findById(req.params.id)
-//   try {
-//     const user = await User.findById(req.params.id)
-//     res.status(200).json(user);
-//   } catch (err) {
-//     next(err);
-//   } 
-// });
 
 
-// Find by ID. 
+
+
+
+// Works, not sure how to do a catch all 404, not sure it is possible.
+
+
 router.get("/:id", (req, res, next) => {
   User.findById(req.params.id)
     .then(user => {
+      console.log('user ------> ', user)
       if (user) {
-        console.log('------> ', user)
         res.status(200).json(user);
-      } else next()
+      } else {
+        // res.status(404).json({ message })
+        throw new Error("Something went wrong");
+      }
     })
     .catch(next);
 });
@@ -53,6 +51,7 @@ router.get("/:id", (req, res, next) => {
 
 
 
+// if an id matches the data then return a 200 or else 404
 
 
 

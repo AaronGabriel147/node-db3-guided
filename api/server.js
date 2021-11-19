@@ -24,11 +24,11 @@ server.get('/', (req, res) => { // Sanity check to connect to browser or HTTP cl
     })
 })
 
-
-server.use('*', (req, res, next) => {
-    console.log(chalk.yellow('@@@***inside catch all 404***@@@')),
-        next({ status: 404, message: `******${req.method} ${req.originalUrl} not found!` })
-});
+// somehow this is not working. **********************************
+// server.use('*', (req, res, next) => {
+//     console.log(chalk.yellow('@@@***inside catch all 404***@@@')),
+//         next({ status: 404, message: `******${req.method} ${req.originalUrl} not found!` })
+// });
 
 
 server.use(errorHandling) // will trap "".catch/500 errors" happening above
