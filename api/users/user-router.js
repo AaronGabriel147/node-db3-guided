@@ -31,55 +31,60 @@ router.get("/", (req, res, next) => {
 
 
 
-// Works, not sure how to do a catch all 404, not sure it is possible.
+// Not sure how to do a catch all 404, not sure it is possible.
 
 
-router.get("/:id", (req, res, next) => {
+// router.get("/:id", (req, res, next) => {
+//   User.findById(req.params.id)
+//     .then(user => {
+//       console.log('user ------> ', user) // undefined when bad ID is entered
+//       if (user) {
+//         res.status(200).json(user);
+//       } else {
+//         res.status(404).json({ message })
+//         // throw new Error("Something went wrong");  // this is how you test the 500 
+//       }
+//     })
+//     .catch(next);
+// });
+
+
+
+// Works!
+router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
-    .then(user => {
-      console.log('user ------> ', user)
-      if (user) {
-        res.status(200).json(user);
+    .then(item => {
+      if (!item) {
+        // throw new Error("Something went wrong");
+        res.status(404).json({
+          message: "The post with the specified ID does not exist"
+        })
       } else {
-        // res.status(404).json({ message })
-        throw new Error("Something went wrong");
+        res.status(200).json(item)
       }
     })
     .catch(next);
 });
 
-
-
-
-// if an id matches the data then return a 200 or else 404
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// router.post("/", (req, res) => {
-//   const userData = req.body;
-
-//   db("users")
-//     .insert(userData, "id")
-//     .then(ids => {
-//       res.status(201).json({ created: ids[0] });
+// SAVED for example: broken when the if then is swapped. order matters!
+// router.get('/:id', (req, res, next) => {
+//   User.findById(req.params.id)
+//     .then(item => {
+//       if (!item) {
+//         res.status(200).json(item)
+//       } else {
+//         // throw new Error("Something went wrong");
+//         res.status(404).json({
+//           message: "The post with the specified ID does not exist"
+//         })
+//       }
 //     })
-//     .catch(err => {
-//       res.status(500).json({ message: "Failed to create new user" });
-//     });
+//     .catch(next);
 // });
+
+
+
+
 
 // // select
 // //     p.id as post_id,    -- rename
